@@ -30,8 +30,6 @@ for i in range(9):
         mainframe.columnconfigure(j, weight=1) 
 
 
-
-
 def save_data():
     p_inicial_value = p_inicial.get()
     p_max_value = p_max.get()
