@@ -3,7 +3,7 @@ from tkinter import ttk
 from logic import genetic_algorithm
 
 class DataObject:
-    def __init__(self, p_inicial, p_max, res, lim_inf, lim_sup, prob_ind, prob_gen, tipo_problema):
+    def __init__(self, p_inicial, p_max, res, lim_inf, lim_sup, prob_ind, prob_gen,num_generaciones, tipo_problema):
         self.p_inicial = p_inicial
         self.p_max = p_max
         self.res = res
@@ -11,6 +11,7 @@ class DataObject:
         self.lim_sup = lim_sup
         self.prob_ind = prob_ind
         self.prob_gen = prob_gen
+        self.num_generaciones = num_generaciones
         self.tipo_problema = tipo_problema
 
 
@@ -24,7 +25,7 @@ def on_combobox_change(event):
     
 mainframe = ttk.Frame(root, padding="3 3 12 12")
 mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
-for i in range(9):
+for i in range(10):
     root.rowconfigure(i, weight=1)
     for j in range(3):
         mainframe.columnconfigure(j, weight=1) 
@@ -38,8 +39,9 @@ def save_data():
     lim_sup_value = lim_sup.get()
     prob_ind_value = prob_ind.get()
     prob_gen_value = prob_gen.get()
+    num_generaciones_value = num_generaciones.get()
     tipo_problema_value = combobox_var.get()
-    data = DataObject(p_inicial_value, p_max_value, res_value, lim_inf_value, lim_sup_value, prob_ind_value, prob_gen_value, tipo_problema_value)
+    data = DataObject(p_inicial_value, p_max_value, res_value, lim_inf_value, lim_sup_value, prob_ind_value, prob_gen_value, num_generaciones_value, tipo_problema_value)
     genetic_algorithm(data)        
 
 
@@ -93,19 +95,24 @@ ttk.Label(mainframe, text="Probabilidad de mutacion del gen:").grid(column=1, ro
 ttk.Spinbox(mainframe, textvariable=prob_gen).grid(column=2, row=7, sticky=W)
 
 
+num_generaciones = StringVar()
+ttk.Label(mainframe, text="Numero de generaciones:").grid(column=1, row=8, sticky=W)
+ttk.Spinbox(mainframe, textvariable=num_generaciones).grid(column=2, row=8, sticky=W)
+
+
 
 
 # Definir el tipo de problema, si es de maximizacion o de minimizacion 
-ttk.Label(mainframe, text="Tipo de problema:").grid(column=1, row=8, sticky=W)
+ttk.Label(mainframe, text="Tipo de problema:").grid(column=1, row=9, sticky=W)
 combobox_var = StringVar(value="Minimizacion")
 combobox=ttk.Combobox(mainframe, values=["Maximizacion","Minimizacion"],textvariable=combobox_var, state='readonly')
-combobox.grid(column=2, row=8, sticky=W)
+combobox.grid(column=2, row=9, sticky=W)
 combobox.bind("<<ComboboxSelected>>", on_combobox_change)
 
 
 
 
-ttk.Button(mainframe, text="Calculate", command=save_data).grid(column=3, row=9, sticky=W)
+ttk.Button(mainframe, text="Calculate", command=save_data).grid(column=3, row=10, sticky=W)
 
 
 for child in mainframe.winfo_children(): 
