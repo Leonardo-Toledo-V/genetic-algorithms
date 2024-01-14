@@ -17,8 +17,9 @@ class Individuo:
         return f"ID: {self.id}, i: {self.i}, Binario: {self.binario}, X: {self.x}, Y: {self.y}"
 
 class Data:
-    num_bits_necesarios = 0
+    num_bits_necesarios = 1
     rango = 0
+    rango_numero = 0
     resolucion = 0
     limite_inferior = 0
     limite_superior = 0
@@ -29,12 +30,13 @@ class Data:
     prob_mutacion_ind = 0
     prob_mutacion_gen = 0
     num_generaciones = 0
-    mejor_individuo = []
+    generacion_actual = 0
 
 class Estadisticas:
-    promedio: []
-    menor: []
-    mayor: []
+    mejor_individuo = None
+    peor_individuo = None
+    promedio = None
+    
 
 
 
@@ -48,8 +50,27 @@ def calcular_valor_x(num_generado):
     valor_x = Data.limite_inferior + num_generado*Data.resolucion
     return valor_x
 
+def calcular_datos():
+    Data.rango = Data.limite_superior - Data.limite_inferior
+    num_saltos = Data.rango/Data.resolucion
+    num_puntos = num_saltos + 1
+    num_bits = int(math.log2(num_puntos) + 1)
+    Data.rango_numero= 2**num_bits -1 #256
+    Data.num_bits_necesarios = len(bin(Data.rango_numero)[2:])
+    
 
-def genetic_algorithm(data):  
+def generar_primer_poblacion():
+        for i in range(Data.poblacion_inicial):
+            num_generado = (random.randint(0, Data.rango_numero))
+            num_generado_binario = (bin(num_generado)[2:]).zfill(Data.num_bits_necesarios)
+            valor_x = calcular_valor_x(num_generado)
+            valor_y = calcular_funcion(funcion, valor_x)
+            individuo = Individuo(i=num_generado, binario=num_generado_binario, x=valor_x, y= valor_y)
+            Data.poblacion_general.append(individuo)
+
+
+
+def genetic_algorithm(data):   
     Data.poblacion_inicial = int(data.p_inicial)
     Data.poblacion_maxima = int(data.p_max)
     Data.resolucion = float(data.res)
@@ -60,34 +81,28 @@ def genetic_algorithm(data):
     Data.tipo_problema_value = data.tipo_problema
     Data.num_generaciones = int(data.num_generaciones)
     
-    for generacion in range(1, Data.num_generaciones + 1):
-        print(f"\nGeneración {generacion}:")
-        # Empezamos sacando los datos 
-        Data.rango = Data.limite_superior - Data.limite_inferior
-        num_saltos = Data.rango/Data.resolucion
-        num_puntos = num_saltos + 1
-        num_bits = int(math.log2(num_puntos) + 1)
-        rango_numero= 2**num_bits -1 #256
-        Data.num_bits_necesarios = len(bin(rango_numero)[2:])
+    #Calculamos los datos con los datos dados
     
-        inicializacion(rango_numero, generacion);
-    for generacion, mejor_individuo in Data.mejor_individuo:
-        print(f"Generación {generacion}: ID: {mejor_individuo.id}, i: {mejor_individuo.i}, Binario: {mejor_individuo.binario}, X: {mejor_individuo.x}, Y: {mejor_individuo.y}")
+    calcular_datos()
+    
+    # Generamos nuestra primer poblacion
+    generar_primer_poblacion()
+    
+    #Se empieza el algoritmo genetico a traves del numero de generaciones
+    for generacion in range(1, Data.num_generaciones + 1):
+        Data.generacion_actual= generacion
+        inicializacion()
+        generar_estadisticas()
+
+    #Imprimimos el mejor individuo de cada generacion
+    #for generacion, mejor_individuo in Estadisticas.mejor_individuo:
+    #print(f"El mejor individuo de la generación {generacion}: es ID: {mejor_individuo.id}, i: {mejor_individuo.i}, Binario: {mejor_individuo.binario}, X: {mejor_individuo.x}, Y: {mejor_individuo.y}")
+    
 
 
-def inicializacion(rango_numero, generacion):
-    for i in range(Data.poblacion_inicial):
-        num_generado = (random.randint(0, rango_numero))
-        num_generado_binario = (bin(num_generado)[2:]).zfill(Data.num_bits_necesarios)
-        valor_x = calcular_valor_x(num_generado)
-        valor_y = calcular_funcion(funcion, valor_x)
-        individuo = Individuo(i=num_generado, binario=num_generado_binario, x=valor_x, y= valor_y)
-        Data.poblacion_general.append(individuo)
-        
-    mejor_individuo_actual = optimizacion()
-    Data.mejor_individuo.append((generacion, mejor_individuo_actual))
 
-
+def inicializacion():        
+    optimizacion()
 
 
 def optimizacion():
@@ -111,38 +126,25 @@ def optimizacion():
     #for individuo in particion_mejor_aptitud:
     #    print(individuo)
     
-    #print("Resto de poblacion")
     resto_poblacion = []
     for individuo in particion_menor_aptitud:
-    #    print(individuo)
         resto_poblacion.append(individuo)
         
     emparejamiento(resto_poblacion, particion_mejor_aptitud)
-    return particion_mejor_aptitud[0]
 
 
 def emparejamiento(resto_poblacion, particion_mejor_aptitud):
-    nueva_poblacion = []
-    for individuo in resto_poblacion:
-        nueva_poblacion.append(individuo)
-    
-    for individuo in particion_mejor_aptitud:
-        nueva_poblacion.append(individuo)
-
     for mejor_individuo in particion_mejor_aptitud:
         for individuo in resto_poblacion:
-            nuevo_individuo1, nuevo_individuo2 = cruza(mejor_individuo, individuo)
-            nueva_poblacion.append(nuevo_individuo1)
-            nueva_poblacion.append(nuevo_individuo2)
-
-
+            cruza(mejor_individuo, individuo)
 
 
 def cruza(mejor_individuo, individuo):
     #Estrategia C1: (90 %) Un punto de cruza aleatorio, para cada pareja a cruzar, de los posibles
     #puntos de cruza de los individuos se selecciona aleatoriamente la posición.
+    
     punto_cruza = random.randint(1, Data.num_bits_necesarios -1)
-    #print("Punto de cruza", punto_cruza)
+    
     parte1 = mejor_individuo.binario[:punto_cruza]
     parte2 = mejor_individuo.binario[punto_cruza:]
     parte3 = individuo.binario[:punto_cruza]
@@ -151,9 +153,6 @@ def cruza(mejor_individuo, individuo):
     nuevo_individuo1 = parte1 + parte4
     nuevo_individuo2 = parte3 + parte2
     
-    #print("Primer cruce de ", mejor_individuo.id,"a cruzar con:", individuo.id, "sin mutar es =", nuevo_individuo1)
-    #print("Segundo cruce de ", mejor_individuo.id,"a cruzar con:", individuo.id, " sin mutar es =", nuevo_individuo2)
-    
     
     if(random.randint(1,100))/100 <= Data.prob_mutacion_ind:
         nuevo_individuo1 = mutacion(nuevo_individuo1)
@@ -161,17 +160,11 @@ def cruza(mejor_individuo, individuo):
     if(random.randint(1,100))/100 <= Data.prob_mutacion_ind:
         nuevo_individuo2 = mutacion(nuevo_individuo2)
     
-    
-    #print("individuo 1 despues de la mutacion: ", nuevo_individuo1)
-    #print("individuo 2 despues de la mutacion: ", nuevo_individuo2)
-    
-    
     guardar_nuevos_individuos(nuevo_individuo1, nuevo_individuo2)
+
     
     poda()
-    
-    return nuevo_individuo1, nuevo_individuo2
-    
+
 
 def mutacion(individuo):
     #Estrategia M1: (100 %) Negación del bit
@@ -182,7 +175,12 @@ def mutacion(individuo):
     nuevo_binario = ''.join(binario_separado)
     return nuevo_binario
 
+
+
 def poda():
+        #Estrategia P2: (90 %) Eliminación aleatoria asegurando mantener al mejor individuo de la
+        #población
+    
     conjunto_i = set()
     poblacion_sin_repetidos = []
 
@@ -198,18 +196,20 @@ def poda():
         flag = False
     individuos_ordenados = sorted(Data.poblacion_general, key=lambda x: x.y, reverse=flag)
 
-    if len(individuos_ordenados) > Data.poblacion_maxima:
-        Data.poblacion_general = individuos_ordenados[:Data.poblacion_maxima]
+    nueva_poblacion = [individuos_ordenados[0]]
 
-    print("Población después de la poda:")
-    for individuo in Data.poblacion_general:
-        print(individuo)
+    
+    if len(individuos_ordenados) > 1:
+        nueva_poblacion.extend(random.sample(individuos_ordenados[1:], min(len(individuos_ordenados)-1, Data.poblacion_maxima-1)))
+
+    Data.poblacion_general = nueva_poblacion
+
+
 
 
 
 def guardar_nuevos_individuos(individuo1, individuo2):
     
-
     numero_decimal1 = int(individuo1, 2)
     numero_decimal2 = int(individuo2, 2)
     x1 = Data.limite_inferior + numero_decimal1*Data.resolucion
@@ -218,9 +218,9 @@ def guardar_nuevos_individuos(individuo1, individuo2):
     y2 = calcular_funcion(funcion, x2)
     
     individuo1 = Individuo(i=numero_decimal1, binario=individuo1, x=x1, y= y1)
-    
-    
     individuo2 = Individuo(i=numero_decimal2, binario=individuo2, x=x2, y= y2)
+    
+    
     Data.poblacion_general.append(individuo1)
     Data.poblacion_general.append(individuo2)
     
@@ -234,3 +234,32 @@ def guardar_nuevos_individuos(individuo1, individuo2):
     #("Toda la poblacion es:")
     #for individuo in individuos_ordenados:
     #print(individuo)
+
+
+def generar_estadisticas():
+    
+    if Data.tipo_problema_value == "Minimizacion":
+        mejor_individuo = min(Data.poblacion_general, key=lambda x: x.y)
+        peor_individuo = max(Data.poblacion_general, key=lambda x: x.y)
+    else:
+        mejor_individuo = max(Data.poblacion_general, key=lambda x: x.y)
+        peor_individuo = min(Data.poblacion_general, key=lambda x: x.y)
+    
+    promedio = sum(individuo.y for individuo in Data.poblacion_general) / len(Data.poblacion_general)
+    
+    
+
+    Estadisticas.mejor_individuo = mejor_individuo
+    Estadisticas.peor_individuo = peor_individuo
+    Estadisticas.promedio = promedio
+
+    print(f"Mejor individuo de la generación {Data.generacion_actual}: {mejor_individuo}")
+    print(f"Peor individuo de la generación {Data.generacion_actual}: {peor_individuo}")
+    print(f"Promedio de la generación {Data.generacion_actual}: {promedio}")
+
+
+
+
+
+def graficar():
+    print("Hello world")
