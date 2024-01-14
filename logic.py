@@ -29,6 +29,7 @@ class Data:
     prob_mutacion_ind = 0
     prob_mutacion_gen = 0
     num_generaciones = 0
+    mejor_individuo = []
 
 class Estadisticas:
     promedio: []
@@ -69,10 +70,12 @@ def genetic_algorithm(data):
         rango_numero= 2**num_bits -1 #256
         Data.num_bits_necesarios = len(bin(rango_numero)[2:])
     
-        inicializacion(rango_numero);
+        inicializacion(rango_numero, generacion);
+    for generacion, mejor_individuo in Data.mejor_individuo:
+        print(f"Generación {generacion}: ID: {mejor_individuo.id}, i: {mejor_individuo.i}, Binario: {mejor_individuo.binario}, X: {mejor_individuo.x}, Y: {mejor_individuo.y}")
 
 
-def inicializacion(rango_numero):
+def inicializacion(rango_numero, generacion):
     for i in range(Data.poblacion_inicial):
         num_generado = (random.randint(0, rango_numero))
         num_generado_binario = (bin(num_generado)[2:]).zfill(Data.num_bits_necesarios)
@@ -80,7 +83,11 @@ def inicializacion(rango_numero):
         valor_y = calcular_funcion(funcion, valor_x)
         individuo = Individuo(i=num_generado, binario=num_generado_binario, x=valor_x, y= valor_y)
         Data.poblacion_general.append(individuo)
-    optimizacion()
+        
+    mejor_individuo_actual = optimizacion()
+    Data.mejor_individuo.append((generacion, mejor_individuo_actual))
+
+
 
 
 def optimizacion():
@@ -111,6 +118,7 @@ def optimizacion():
         resto_poblacion.append(individuo)
         
     emparejamiento(resto_poblacion, particion_mejor_aptitud)
+    return particion_mejor_aptitud[0]
 
 
 def emparejamiento(resto_poblacion, particion_mejor_aptitud):
