@@ -1,0 +1,38 @@
+Caso de Prueba 1
+
+Función: (x**3 * sin(x))/100 + x**2 *cos(x)
+Población inicial: 2
+Población máxima: 4
+Resolución: 0.05
+Límites: [-4, 4]
+Probabilidad de mutación del individuo: 0.32
+Probabilidad de mutación del gen: 0.23
+Número de generaciones: 50
+Tipo de problema: Maximización
+
+
+Caso de Prueba 3 (documento):
+
+Función: (x**3 * sin(x))/100 + x**2 *cos(x)
+Población inicial: 4
+Población máxima: 40
+Resolución: 0.05
+Límites: [-4, 12]
+Probabilidad de mutación del individuo: 0.32
+Probabilidad de mutación del gen: 0.23
+Número de generaciones: 50
+Tipo de problema: Maximización
+
+
+
+Caso de Prueba 3
+
+Función: (x**3 * sin(x))/100 + x**2 *cos(x)
+Población inicial: 2
+Población máxima: 4
+Resolución: 0.05
+Límites: [-4, 4]
+Probabilidad de mutación del individuo: 0.32
+Probabilidad de mutación del gen: 0.23
+Número de generaciones: 50
+Tipo de problema: Minimizacion

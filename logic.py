@@ -79,7 +79,7 @@ def generar_primer_poblacion():
 
 
 def imprimir_mejor_individuo():
-    mensaje = f"El mejor individuo es: \n{Estadisticas.mejor_individuo}"
+    mensaje = f"El mejor individuo es: \n{Estadisticas.mejor_individuo}\n\n Revisa la carpeta results/first-graph/video para ver el video de la evolución del fitness"
     ventana_alerta = tk.Tk()
     ventana_alerta.title("Felicidades")
 
@@ -112,8 +112,8 @@ def genetic_algorithm(data):
         Data.generacion_actual= generacion
         optimizacion()
         generar_estadisticas()
-    generar_video(Data.num_generaciones)
-    imprimir_mejor_individuo()
+    #generar_video(Data.num_generaciones)
+    #imprimir_mejor_individuo()
 
 
 
@@ -253,4 +253,4 @@ def generar_estadisticas():
         valores_y = [individuo.y for individuo in Data.poblacion_general]
         generar_segunda_grafica(valores_x, valores_y, Data.generacion_actual)
 
-    generar_graficas(Estadisticas.mejor_individuo_arreglo, Estadisticas.peor_individuo_arreglo, Estadisticas.promedio_arreglo, Estadisticas.generacion_arreglo)
+    #generar_graficas(Estadisticas.mejor_individuo_arreglo, Estadisticas.peor_individuo_arreglo, Estadisticas.promedio_arreglo, Estadisticas.generacion_arreglo)
