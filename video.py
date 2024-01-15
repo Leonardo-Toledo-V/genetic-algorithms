@@ -2,8 +2,8 @@ import os
 import cv2
 
 def generar_video(generacion):
-    img_folder_path = 'results/img'
-    video_folder_path = 'results/video'
+    img_folder_path = 'results/first-graph/img'
+    video_folder_path = 'results/first-graph/video'
 
     if not os.path.exists(video_folder_path):
         os.makedirs(video_folder_path)

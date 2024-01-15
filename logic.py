@@ -1,8 +1,9 @@
 import math
 import random
 from sympy import symbols, lambdify
-from graphic import generar_graficas
+from graphs.graphic import generar_graficas
 from video import generar_video
+#from graphs.graphic2 import generar_segunda_grafica
 
 funcion = "(x**3 * sin(x))/100 + x**2 *cos(x)"
 
@@ -193,6 +194,10 @@ def poda():
         nueva_poblacion.extend(random.sample(individuos_ordenados[1:], min(len(individuos_ordenados)-1, Data.poblacion_maxima-1)))
 
     Data.poblacion_general = nueva_poblacion
+    
+    print("Nueva población: ")
+    for individuo in Data.poblacion_general:
+        print(individuo)
 
 
 def guardar_nuevos_individuos(individuo1, individuo2):
@@ -232,4 +237,7 @@ def generar_estadisticas():
     Estadisticas.promedio_arreglo.append(Estadisticas.promedio)
     Estadisticas.generacion_arreglo.append(Data.generacion_actual)
     
-    generar_graficas(Estadisticas.mejor_individuo_arreglo, Estadisticas.peor_individuo_arreglo, Estadisticas.promedio_arreglo, Estadisticas.generacion_arreglo)
+    
+    
+    #generar_graficas(Estadisticas.mejor_individuo_arreglo, Estadisticas.peor_individuo_arreglo, Estadisticas.promedio_arreglo, Estadisticas.generacion_arreglo)
+    #generar_segunda_grafica(Estadisticas.mejor_individuo.x, Estadisticas.mejor_individuo.y, Data.generacion_actual, )

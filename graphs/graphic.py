@@ -16,7 +16,7 @@ def generar_graficas(mejor_individuo, peor_individuo, promedio, generacion_actua
     plt.ylabel("Eje Y")
     plt.grid(True)
     
-    img_folder_path = 'results/img'
+    img_folder_path = 'results/first-graph/img'
 
     if not os.path.exists(img_folder_path):
         os.makedirs(img_folder_path)
