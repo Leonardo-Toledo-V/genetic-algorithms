@@ -1,11 +1,10 @@
 import math
 import random
+import tkinter as tk
 from sympy import symbols, lambdify
 from graphs.graphic import generar_graficas
 from video import generar_video
 #from graphs.graphic2 import generar_segunda_grafica
-
-funcion = "(x**3 * sin(x))/100 + x**2 *cos(x)"
 
 class Individuo:
     identificador = 0
@@ -35,6 +34,7 @@ class Data:
     prob_mutacion_gen = 0
     num_generaciones = 0
     generacion_actual = 0
+    funcion = ""
 
 
 class Estadisticas:
@@ -73,10 +73,20 @@ def generar_primer_poblacion():
             num_generado = (random.randint(0, Data.rango_numero))
             num_generado_binario = (bin(num_generado)[2:]).zfill(Data.num_bits_necesarios)
             valor_x = calcular_valor_x(num_generado)
-            valor_y = calcular_funcion(funcion, valor_x)
+            valor_y = calcular_funcion(Data.funcion, valor_x)
             individuo = Individuo(i=num_generado, binario=num_generado_binario, x=valor_x, y= valor_y)
             Data.poblacion_general.append(individuo)
 
+
+def imprimir_mejor_individuo():
+    mensaje = f"El mejor individuo es: \n{Estadisticas.mejor_individuo}"
+    ventana_alerta = tk.Tk()
+    ventana_alerta.title("Felicidades")
+
+    etiqueta_mensaje = tk.Label(ventana_alerta, text=mensaje)
+    etiqueta_mensaje.pack(padx=10, pady=10)
+    
+    ventana_alerta.mainloop()
 
 def genetic_algorithm(data):   
     Data.poblacion_inicial = int(data.p_inicial)
@@ -88,6 +98,7 @@ def genetic_algorithm(data):
     Data.prob_mutacion_gen = float(data.prob_gen)
     Data.tipo_problema_value = data.tipo_problema
     Data.num_generaciones = int(data.num_generaciones)
+    Data.funcion = data.funcion
     
     #Calculamos los datos con los datos dados
     
@@ -101,7 +112,7 @@ def genetic_algorithm(data):
         Data.generacion_actual= generacion
         optimizacion()
         generar_estadisticas()
-
+    imprimir_mejor_individuo()
     generar_video(Data.num_generaciones)
 
 
@@ -206,8 +217,8 @@ def guardar_nuevos_individuos(individuo1, individuo2):
     numero_decimal2 = int(individuo2, 2)
     x1 = Data.limite_inferior + numero_decimal1*Data.resolucion
     x2 = Data.limite_inferior + numero_decimal2*Data.resolucion
-    y1 = calcular_funcion(funcion, x1)
-    y2 = calcular_funcion(funcion, x2)
+    y1 = calcular_funcion(Data.funcion, x1)
+    y2 = calcular_funcion(Data.funcion, x2)
     
     individuo1 = Individuo(i=numero_decimal1, binario=individuo1, x=x1, y= y1)
     individuo2 = Individuo(i=numero_decimal2, binario=individuo2, x=x2, y= y2)
@@ -239,5 +250,5 @@ def generar_estadisticas():
     
     
     
-    #generar_graficas(Estadisticas.mejor_individuo_arreglo, Estadisticas.peor_individuo_arreglo, Estadisticas.promedio_arreglo, Estadisticas.generacion_arreglo)
+    generar_graficas(Estadisticas.mejor_individuo_arreglo, Estadisticas.peor_individuo_arreglo, Estadisticas.promedio_arreglo, Estadisticas.generacion_arreglo)
     #generar_segunda_grafica(Estadisticas.mejor_individuo.x, Estadisticas.mejor_individuo.y, Data.generacion_actual, )
