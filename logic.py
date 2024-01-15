@@ -1,6 +1,8 @@
 import math
 import random
 from sympy import symbols, lambdify
+from grafica import generar_graficas
+from video import generar_video
 
 funcion = "(x**3 * sin(x))/100 + x**2 *cos(x)"
 
@@ -15,6 +17,7 @@ class Individuo:
         self.y = round(y, 4)
     def __str__(self):
         return f"ID: {self.id}, i: {self.i}, Binario: {self.binario}, X: {self.x}, Y: {self.y}"
+
 
 class Data:
     num_bits_necesarios = 1
@@ -32,12 +35,15 @@ class Data:
     num_generaciones = 0
     generacion_actual = 0
 
+
 class Estadisticas:
     mejor_individuo = None
     peor_individuo = None
     promedio = None
-    
-
+    mejor_individuo_arreglo = []
+    peor_individuo_arreglo = []
+    promedio_arreglo = []
+    generacion_arreglo = []
 
 
 def calcular_funcion(funcion, valor_x):
@@ -46,9 +52,11 @@ def calcular_funcion(funcion, valor_x):
     resultado = expresion(valor_x)
     return resultado
 
+
 def calcular_valor_x(num_generado):
     valor_x = Data.limite_inferior + num_generado*Data.resolucion
     return valor_x
+
 
 def calcular_datos():
     Data.rango = Data.limite_superior - Data.limite_inferior
@@ -56,8 +64,8 @@ def calcular_datos():
     num_puntos = num_saltos + 1
     num_bits = int(math.log2(num_puntos) + 1)
     Data.rango_numero= 2**num_bits -1 #256
-    Data.num_bits_necesarios = len(bin(Data.rango_numero)[2:])
-    
+    Data.num_bits_necesarios = len(bin(Data.rango_numero)[2:])    
+
 
 def generar_primer_poblacion():
         for i in range(Data.poblacion_inicial):
@@ -67,7 +75,6 @@ def generar_primer_poblacion():
             valor_y = calcular_funcion(funcion, valor_x)
             individuo = Individuo(i=num_generado, binario=num_generado_binario, x=valor_x, y= valor_y)
             Data.poblacion_general.append(individuo)
-
 
 
 def genetic_algorithm(data):   
@@ -91,45 +98,30 @@ def genetic_algorithm(data):
     #Se empieza el algoritmo genetico a traves del numero de generaciones
     for generacion in range(1, Data.num_generaciones + 1):
         Data.generacion_actual= generacion
-        inicializacion()
+        optimizacion()
         generar_estadisticas()
 
-    #Imprimimos el mejor individuo de cada generacion
-    #for generacion, mejor_individuo in Estadisticas.mejor_individuo:
-    #print(f"El mejor individuo de la generación {generacion}: es ID: {mejor_individuo.id}, i: {mejor_individuo.i}, Binario: {mejor_individuo.binario}, X: {mejor_individuo.x}, Y: {mejor_individuo.y}")
-    
+    generar_video(Data.num_generaciones)
 
-
-
-def inicializacion():        
-    optimizacion()
 
 
 def optimizacion():
     #Estrategia A3: (100 %) la población se ordena y particiona en dos, los individuos de la
     #partición con mejor aptitud se cruzan con algunos o todos los individuos.
+    
     flag = True
     if Data.tipo_problema_value == "Minimizacion":
         flag = False
-    # Se ordenan todos los individuos para posteriormente particionarlos
+
     individuos_ordenados = sorted(Data.poblacion_general, key=lambda x: x.y, reverse=flag)
     
-    #Particionamos en dos elementos y separamos la mejor aptitud, y los de peor aptitud
     mitad = int(len(individuos_ordenados) / 2)
     particion_mejor_aptitud = individuos_ordenados[:mitad]
     particion_menor_aptitud = individuos_ordenados[mitad:]
-
-    #for individuo in individuos_ordenados:
-    #    print(f"ID: {individuo.id}, i: {individuo.i}, Binario: {individuo.binario}, X: {individuo.x}, Y: {individuo.y}")
-
-    #print("Poblacion con mejor aptitud:")
-    #for individuo in particion_mejor_aptitud:
-    #    print(individuo)
     
     resto_poblacion = []
     for individuo in particion_menor_aptitud:
         resto_poblacion.append(individuo)
-        
     emparejamiento(resto_poblacion, particion_mejor_aptitud)
 
 
@@ -153,7 +145,6 @@ def cruza(mejor_individuo, individuo):
     nuevo_individuo1 = parte1 + parte4
     nuevo_individuo2 = parte3 + parte2
     
-    
     if(random.randint(1,100))/100 <= Data.prob_mutacion_ind:
         nuevo_individuo1 = mutacion(nuevo_individuo1)
         
@@ -161,25 +152,25 @@ def cruza(mejor_individuo, individuo):
         nuevo_individuo2 = mutacion(nuevo_individuo2)
     
     guardar_nuevos_individuos(nuevo_individuo1, nuevo_individuo2)
-
     
     poda()
 
 
 def mutacion(individuo):
     #Estrategia M1: (100 %) Negación del bit
+    
     binario_separado = list(individuo)
     for i in range(len(binario_separado)):
         if (random.randint(1,100))/100 <= Data.prob_mutacion_gen:
             binario_separado[i] = '1' if binario_separado[i] == '0' else '0'
     nuevo_binario = ''.join(binario_separado)
+    
     return nuevo_binario
 
 
-
 def poda():
-        #Estrategia P2: (90 %) Eliminación aleatoria asegurando mantener al mejor individuo de la
-        #población
+    #Estrategia P2: (90 %) Eliminación aleatoria asegurando mantener al mejor individuo de la
+    #población
     
     conjunto_i = set()
     poblacion_sin_repetidos = []
@@ -197,15 +188,11 @@ def poda():
     individuos_ordenados = sorted(Data.poblacion_general, key=lambda x: x.y, reverse=flag)
 
     nueva_poblacion = [individuos_ordenados[0]]
-
     
     if len(individuos_ordenados) > 1:
         nueva_poblacion.extend(random.sample(individuos_ordenados[1:], min(len(individuos_ordenados)-1, Data.poblacion_maxima-1)))
 
     Data.poblacion_general = nueva_poblacion
-
-
-
 
 
 def guardar_nuevos_individuos(individuo1, individuo2):
@@ -223,17 +210,6 @@ def guardar_nuevos_individuos(individuo1, individuo2):
     
     Data.poblacion_general.append(individuo1)
     Data.poblacion_general.append(individuo2)
-    
-    
-    #flag = True
-    #if Data.tipo_problema_value == "Minimizacion":
-    #    flag = False
-    #individuos_ordenados = sorted(Data.poblacion_general, key=lambda x: x.y, reverse=flag)
-    
-    
-    #("Toda la poblacion es:")
-    #for individuo in individuos_ordenados:
-    #print(individuo)
 
 
 def generar_estadisticas():
@@ -247,19 +223,13 @@ def generar_estadisticas():
     
     promedio = sum(individuo.y for individuo in Data.poblacion_general) / len(Data.poblacion_general)
     
-    
-
     Estadisticas.mejor_individuo = mejor_individuo
     Estadisticas.peor_individuo = peor_individuo
     Estadisticas.promedio = promedio
 
-    print(f"Mejor individuo de la generación {Data.generacion_actual}: {mejor_individuo}")
-    print(f"Peor individuo de la generación {Data.generacion_actual}: {peor_individuo}")
-    print(f"Promedio de la generación {Data.generacion_actual}: {promedio}")
-
-
-
-
-
-def graficar():
-    print("Hello world")
+    Estadisticas.mejor_individuo_arreglo.append(Estadisticas.mejor_individuo.y)
+    Estadisticas.peor_individuo_arreglo.append(Estadisticas.peor_individuo.y)
+    Estadisticas.promedio_arreglo.append(Estadisticas.promedio)
+    Estadisticas.generacion_arreglo.append(Data.generacion_actual)
+    
+    generar_graficas(Estadisticas.mejor_individuo_arreglo, Estadisticas.peor_individuo_arreglo, Estadisticas.promedio_arreglo, Estadisticas.generacion_arreglo)
