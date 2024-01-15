@@ -4,7 +4,7 @@ import tkinter as tk
 from sympy import symbols, lambdify
 from graphs.graphic import generar_graficas
 from video import generar_video
-#from graphs.graphic2 import generar_segunda_grafica
+from graphs.graphic2 import generar_segunda_grafica
 
 class Individuo:
     identificador = 0
@@ -112,8 +112,8 @@ def genetic_algorithm(data):
         Data.generacion_actual= generacion
         optimizacion()
         generar_estadisticas()
-    imprimir_mejor_individuo()
     generar_video(Data.num_generaciones)
+    imprimir_mejor_individuo()
 
 
 
@@ -248,7 +248,9 @@ def generar_estadisticas():
     Estadisticas.promedio_arreglo.append(Estadisticas.promedio)
     Estadisticas.generacion_arreglo.append(Data.generacion_actual)
     
-    
-    
+    if Data.generacion_actual == Data.num_generaciones:
+        valores_x = [individuo.x for individuo in Data.poblacion_general]
+        valores_y = [individuo.y for individuo in Data.poblacion_general]
+        generar_segunda_grafica(valores_x, valores_y, Data.generacion_actual)
+
     generar_graficas(Estadisticas.mejor_individuo_arreglo, Estadisticas.peor_individuo_arreglo, Estadisticas.promedio_arreglo, Estadisticas.generacion_arreglo)
-    #generar_segunda_grafica(Estadisticas.mejor_individuo.x, Estadisticas.mejor_individuo.y, Data.generacion_actual, )
