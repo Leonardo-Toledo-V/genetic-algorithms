@@ -1,7 +1,7 @@
 import math
 import random
 from sympy import symbols, lambdify
-from grafica import generar_graficas
+from graphic import generar_graficas
 from video import generar_video
 
 funcion = "(x**3 * sin(x))/100 + x**2 *cos(x)"
