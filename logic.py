@@ -112,8 +112,8 @@ def genetic_algorithm(data):
         Data.generacion_actual= generacion
         optimizacion()
         generar_estadisticas()
-    #generar_video(Data.num_generaciones)
-    #imprimir_mejor_individuo()
+    generar_video(Data.num_generaciones)
+    imprimir_mejor_individuo()
 
 
 
@@ -206,7 +206,7 @@ def poda():
 
     Data.poblacion_general = nueva_poblacion
     
-    print("Nueva población: ")
+    print(f"Población en la generación :{Data.generacion_actual} ")
     for individuo in Data.poblacion_general:
         print(individuo)
 
@@ -251,6 +251,17 @@ def generar_estadisticas():
     if Data.generacion_actual == Data.num_generaciones:
         valores_x = [individuo.x for individuo in Data.poblacion_general]
         valores_y = [individuo.y for individuo in Data.poblacion_general]
-        generar_segunda_grafica(valores_x, valores_y, Data.generacion_actual)
-
-    #generar_graficas(Estadisticas.mejor_individuo_arreglo, Estadisticas.peor_individuo_arreglo, Estadisticas.promedio_arreglo, Estadisticas.generacion_arreglo)
+        if Data.tipo_problema_value == "Minimizacion":
+            mejor_x = min([individuo.x for individuo in Data.poblacion_general])
+            mejor_y = min([individuo.y for individuo in Data.poblacion_general])
+            peor_x = max([individuo.x for individuo in Data.poblacion_general])
+            peor_y = max([individuo.y for individuo in Data.poblacion_general])
+        else:
+            mejor_x = max([individuo.x for individuo in Data.poblacion_general])
+            mejor_y = max([individuo.y for individuo in Data.poblacion_general])
+            peor_x = min([individuo.x for individuo in Data.poblacion_general])
+            peor_y = min([individuo.y for individuo in Data.poblacion_general])
+            
+        generar_segunda_grafica(valores_x, valores_y,mejor_x, mejor_y, peor_x, peor_y, Data.generacion_actual)
+        
+    generar_graficas(Estadisticas.mejor_individuo_arreglo, Estadisticas.peor_individuo_arreglo, Estadisticas.promedio_arreglo, Estadisticas.generacion_arreglo)

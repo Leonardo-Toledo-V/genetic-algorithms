@@ -2,17 +2,16 @@ import matplotlib.pyplot as plt
 import os
 i = 0
 
-def generar_segunda_grafica(x,y, generacion_actual):
+def generar_segunda_grafica(x,y,mejor_x, mejor_y, peor_x, peor_y, generacion_actual):
     global i
     individuo_x = x
     individuo_y = y
-    mejor_individuo = individuo_y.index(max(individuo_y))
-    peor_individuo = individuo_y.index(min(individuo_y))
+    mejor_x_value = mejor_x
+    mejor_y_value = mejor_y
+    peor_x_value = peor_x
+    peor_y_value = peor_y
+
     i += 1
-    colores = [(0.25, 0.65, 0.90) for _ in range(len(individuo_x))]
-    colores[mejor_individuo] = (0.15, 0.68, 0.38)
-    colores[peor_individuo] = (0.92, 0.23, 0.35) 
-    
     
     plt.clf()
     plt.title("Genethic Algorithms " + str(generacion_actual))
@@ -27,7 +26,10 @@ def generar_segunda_grafica(x,y, generacion_actual):
     if not os.path.exists(img_folder_path):
         os.makedirs(img_folder_path)
     
-    plt.scatter(individuo_x, individuo_y, s=500, c=colores, alpha=0.4)
+    plt.scatter(individuo_x, individuo_y, label="Individuos", s=500, c="#45aaf2", alpha=0.4)
+    plt.scatter(mejor_x_value, mejor_y_value, label="Mejor", s=500, c="#20bf6b", alpha=0.4)
+    plt.scatter(peor_x_value, peor_y_value, label="Peor", s=500, c="#eb3b5a", alpha=0.4)
+    plt.legend()
     
     img_file_name = f'img_generacion_{i}.png'
 
