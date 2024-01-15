@@ -11,7 +11,7 @@ def generar_graficas(mejor_individuo, peor_individuo, promedio, generacion_actua
     i += 1
     
     plt.clf()
-    plt.title("Genethic Algorithms")
+    plt.title("Evolución del fitness")
     plt.xlabel("Generación número: "+str(i))
     plt.ylabel("Eje Y")
     plt.grid(True)
