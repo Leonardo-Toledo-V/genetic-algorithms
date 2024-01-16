@@ -36,3 +36,33 @@ Probabilidad de mutación del individuo: 0.32
 Probabilidad de mutación del gen: 0.23
 Número de generaciones: 50
 Tipo de problema: Minimizacion
+
+
+
+Caso de Prueba 4
+
+(0.001)*(x**3)*(1-cos(5*x))
+Población inicial: 5
+Población máxima: 20
+Resolución: 0.1
+Límites: [-6, -8]
+Probabilidad de mutación del individuo: 0.5
+Probabilidad de mutación del gen: 0.4
+Número de generaciones: 50
+Tipo de problema: Minimizacion
+
+
+
+Caso de Prueba 4
+
+x*cos(x)*sin(x)
+Población inicial: 10
+Población máxima: 20
+Resolución: 0.1
+Límites: [-5, 5]
+Probabilidad de mutación del individuo: 0.5
+Probabilidad de mutación del gen: 0.4
+Número de generaciones: 50
+Tipo de problema: Minimizacion
+
+((x)*cos(x))-((x)*sin(3*x))

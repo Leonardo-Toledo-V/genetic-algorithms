@@ -2,12 +2,13 @@ import matplotlib.pyplot as plt
 import os
 i = 0
 
-def generar_graficas(mejor_individuo, peor_individuo, promedio, generacion_actual):
+def generar_graficas(mejor_individuo, peor_individuo, promedio, generacion_actual, num_generaciones):
     global i
     x = generacion_actual
     media = promedio
     mejor = mejor_individuo
     peor = peor_individuo
+    generacion = num_generaciones
     i += 1
     
     plt.clf()
@@ -31,3 +32,6 @@ def generar_graficas(mejor_individuo, peor_individuo, promedio, generacion_actua
 
     img_file_path = os.path.join(img_folder_path, img_file_name)
     plt.savefig(img_file_path)
+    
+    if i == generacion:
+        plt.show()

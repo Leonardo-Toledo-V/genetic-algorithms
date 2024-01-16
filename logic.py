@@ -55,6 +55,9 @@ def calcular_funcion(funcion, valor_x):
 
 
 def calcular_valor_x(num_generado):
+    if Data.limite_inferior >= Data.limite_superior:
+        valor_x = Data.limite_superior + num_generado*Data.resolucion
+        return valor_x    
     valor_x = Data.limite_inferior + num_generado*Data.resolucion
     return valor_x
 
@@ -63,8 +66,8 @@ def calcular_datos():
     Data.rango = Data.limite_superior - Data.limite_inferior
     num_saltos = Data.rango/Data.resolucion
     num_puntos = num_saltos + 1
-    num_bits = int(math.log2(num_puntos) + 1)
-    Data.rango_numero= 2**num_bits -1 #256
+    num_bits = int(math.log2(abs(num_puntos)))
+    Data.rango_numero= 2**num_bits
     Data.num_bits_necesarios = len(bin(Data.rango_numero)[2:])    
 
 
@@ -76,6 +79,8 @@ def generar_primer_poblacion():
             valor_y = calcular_funcion(Data.funcion, valor_x)
             individuo = Individuo(i=num_generado, binario=num_generado_binario, x=valor_x, y= valor_y)
             Data.poblacion_general.append(individuo)
+        for individuo in Data.poblacion_general:
+            print(f"este es el individuo generado {individuo}")
 
 
 def imprimir_mejor_individuo():
@@ -107,10 +112,13 @@ def genetic_algorithm(data):
     # Generamos nuestra primer poblacion
     generar_primer_poblacion()
     
-    #Se empieza el algoritmo genetico a traves del numero de generaciones
+    #Bucle de optimización
     for generacion in range(1, Data.num_generaciones + 1):
         Data.generacion_actual= generacion
         optimizacion()
+        print(f"Población en la generación :{Data.generacion_actual} ")
+        for individuo in Data.poblacion_general:
+            print(individuo)
         generar_estadisticas()
     generar_video(Data.num_generaciones)
     imprimir_mejor_individuo()
@@ -205,18 +213,19 @@ def poda():
         nueva_poblacion.extend(random.sample(individuos_ordenados[1:], min(len(individuos_ordenados)-1, Data.poblacion_maxima-1)))
 
     Data.poblacion_general = nueva_poblacion
-    
-    print(f"Población en la generación :{Data.generacion_actual} ")
-    for individuo in Data.poblacion_general:
-        print(individuo)
 
 
 def guardar_nuevos_individuos(individuo1, individuo2):
     
     numero_decimal1 = int(individuo1, 2)
     numero_decimal2 = int(individuo2, 2)
-    x1 = Data.limite_inferior + numero_decimal1*Data.resolucion
-    x2 = Data.limite_inferior + numero_decimal2*Data.resolucion
+    if Data.limite_inferior >= Data.limite_superior:
+        x1 = Data.limite_superior + numero_decimal1*Data.resolucion
+        x2 = Data.limite_superior + numero_decimal2*Data.resolucion    
+    else:
+        x1 = Data.limite_inferior + numero_decimal1*Data.resolucion
+        x2 = Data.limite_inferior + numero_decimal2*Data.resolucion
+    
     y1 = calcular_funcion(Data.funcion, x1)
     y2 = calcular_funcion(Data.funcion, x2)
     
@@ -264,4 +273,4 @@ def generar_estadisticas():
             
         generar_segunda_grafica(valores_x, valores_y,mejor_x, mejor_y, peor_x, peor_y, Data.generacion_actual)
         
-    generar_graficas(Estadisticas.mejor_individuo_arreglo, Estadisticas.peor_individuo_arreglo, Estadisticas.promedio_arreglo, Estadisticas.generacion_arreglo)
+    generar_graficas(Estadisticas.mejor_individuo_arreglo, Estadisticas.peor_individuo_arreglo, Estadisticas.promedio_arreglo, Estadisticas.generacion_arreglo, Data.num_generaciones)
