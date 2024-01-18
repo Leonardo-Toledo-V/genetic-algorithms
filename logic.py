@@ -20,10 +20,11 @@ class Individuo:
 
 
 class Data:
-    num_bits_necesarios = 1
+    rango_punto_cruza = 1
     rango = 0
     rango_numero = 0
-    resolucion = 0
+    resolucion: 0
+    resolucion_deseada = 0
     limite_inferior = 0
     limite_superior = 0
     poblacion_inicial = 0
@@ -35,6 +36,7 @@ class Data:
     num_generaciones = 0
     generacion_actual = 0
     funcion = ""
+    num_bits = 1
 
 
 class Estadisticas:
@@ -46,6 +48,31 @@ class Estadisticas:
     promedio_arreglo = []
     generacion_arreglo = []
 
+def vaciarDatos():
+    Data.rango_punto_cruza = 1
+    Data.rango = 0
+    Data.rango_numero = 0
+    Data.resolucion: 0
+    Data.resolucion_deseada = 0
+    Data.limite_inferior = 0
+    Data.limite_superior = 0
+    Data.poblacion_inicial = 0
+    Data.poblacion_maxima = 0
+    Data.tipo_problema_value = ""
+    Data.poblacion_general = []
+    Data.prob_mutacion_ind = 0
+    Data.prob_mutacion_gen = 0
+    Data.num_generaciones = 0
+    Data.generacion_actual = 0
+    Data.funcion = ""
+    Data.num_bits = 1
+    Estadisticas.mejor_individuo = None
+    Estadisticas.peor_individuo = None
+    Estadisticas.promedio = None
+    Estadisticas.mejor_individuo_arreglo = []
+    Estadisticas.peor_individuo_arreglo = []
+    Estadisticas.promedio_arreglo = []
+    Estadisticas.generacion_arreglo = []
 
 def calcular_funcion(funcion, valor_x):
     x = symbols('x')
@@ -57,24 +84,39 @@ def calcular_funcion(funcion, valor_x):
 def calcular_valor_x(num_generado):
     if Data.limite_inferior >= Data.limite_superior:
         valor_x = Data.limite_superior + num_generado*Data.resolucion
-        return valor_x    
+        print(f"valor de x en primer if {valor_x}")
+        return valor_x
     valor_x = Data.limite_inferior + num_generado*Data.resolucion
+    print(f"valor de x en segundo if {valor_x}")
     return valor_x
 
 
 def calcular_datos():
     Data.rango = Data.limite_superior - Data.limite_inferior
-    num_saltos = Data.rango/Data.resolucion
+    num_saltos = Data.rango/Data.resolucion_deseada
     num_puntos = num_saltos + 1
-    num_bits = int(math.log2(abs(num_puntos)))
-    Data.rango_numero= 2**num_bits
-    Data.num_bits_necesarios = len(bin(Data.rango_numero)[2:])    
+    Data.num_bits = math.log2(abs(num_puntos))
+    if Data.num_bits % 1 !=0:
+        Data.num_bits =  math.ceil(math.ceil(Data.num_bits))
+    else:
+        Data.num_bits = int(Data.num_bits)
+    Data.resolucion = Data.rango/((2**Data.num_bits))
+    print(f"resolucion {Data.resolucion}")
+    print(f"rango : {Data.rango}")
+    print(f"num_bits : {Data.num_bits}")
+    if Data.resolucion % 1 == 0:
+        Data.resolucion =  int(Data.resolucion)
+    else:
+        Data.resolucion = round(Data.resolucion, 4)        
+    print(f"resolucion {Data.resolucion}")
+    Data.rango_numero= 2**Data.num_bits-1
+    Data.rango_punto_cruza = len(bin(Data.rango_numero)[2:])    
 
 
 def generar_primer_poblacion():
         for i in range(Data.poblacion_inicial):
-            num_generado = (random.randint(0, Data.rango_numero))
-            num_generado_binario = (bin(num_generado)[2:]).zfill(Data.num_bits_necesarios)
+            num_generado = random.randint(1, Data.rango_numero)
+            num_generado_binario = format(num_generado, f"0{Data.num_bits}b")
             valor_x = calcular_valor_x(num_generado)
             valor_y = calcular_funcion(Data.funcion, valor_x)
             individuo = Individuo(i=num_generado, binario=num_generado_binario, x=valor_x, y= valor_y)
@@ -94,9 +136,10 @@ def imprimir_mejor_individuo():
     ventana_alerta.mainloop()
 
 def genetic_algorithm(data):   
+    vaciarDatos()
     Data.poblacion_inicial = int(data.p_inicial)
     Data.poblacion_maxima = int(data.p_max)
-    Data.resolucion = float(data.res)
+    Data.resolucion_deseada = float(data.res)
     Data.limite_inferior = float(data.lim_inf)
     Data.limite_superior = float(data.lim_sup)
     Data.prob_mutacion_ind = float(data.prob_ind)
@@ -106,7 +149,6 @@ def genetic_algorithm(data):
     Data.funcion = data.funcion
     
     #Calculamos los datos con los datos dados
-    
     calcular_datos()
     
     # Generamos nuestra primer poblacion
@@ -155,7 +197,7 @@ def cruza(mejor_individuo, individuo):
     #Estrategia C1: (90 %) Un punto de cruza aleatorio, para cada pareja a cruzar, de los posibles
     #puntos de cruza de los individuos se selecciona aleatoriamente la posición.
     
-    punto_cruza = random.randint(1, Data.num_bits_necesarios -1)
+    punto_cruza = random.randint(1, Data.rango_punto_cruza -1)
     
     parte1 = mejor_individuo.binario[:punto_cruza]
     parte2 = mejor_individuo.binario[punto_cruza:]
@@ -174,7 +216,6 @@ def cruza(mejor_individuo, individuo):
     guardar_nuevos_individuos(nuevo_individuo1, nuevo_individuo2)
     
     poda()
-
 
 def mutacion(individuo):
     #Estrategia M1: (100 %) Negación del bit
@@ -221,7 +262,7 @@ def guardar_nuevos_individuos(individuo1, individuo2):
     numero_decimal2 = int(individuo2, 2)
     if Data.limite_inferior >= Data.limite_superior:
         x1 = Data.limite_superior + numero_decimal1*Data.resolucion
-        x2 = Data.limite_superior + numero_decimal2*Data.resolucion    
+        x2 = Data.limite_superior + numero_decimal2*Data.resolucion
     else:
         x1 = Data.limite_inferior + numero_decimal1*Data.resolucion
         x2 = Data.limite_inferior + numero_decimal2*Data.resolucion
@@ -257,20 +298,18 @@ def generar_estadisticas():
     Estadisticas.promedio_arreglo.append(Estadisticas.promedio)
     Estadisticas.generacion_arreglo.append(Data.generacion_actual)
     
-    if Data.generacion_actual == Data.num_generaciones:
-        valores_x = [individuo.x for individuo in Data.poblacion_general]
-        valores_y = [individuo.y for individuo in Data.poblacion_general]
-        if Data.tipo_problema_value == "Minimizacion":
-            mejor_x = min([individuo.x for individuo in Data.poblacion_general])
-            mejor_y = min([individuo.y for individuo in Data.poblacion_general])
-            peor_x = max([individuo.x for individuo in Data.poblacion_general])
-            peor_y = max([individuo.y for individuo in Data.poblacion_general])
-        else:
-            mejor_x = max([individuo.x for individuo in Data.poblacion_general])
-            mejor_y = max([individuo.y for individuo in Data.poblacion_general])
-            peor_x = min([individuo.x for individuo in Data.poblacion_general])
-            peor_y = min([individuo.y for individuo in Data.poblacion_general])
-            
-        generar_segunda_grafica(valores_x, valores_y,mejor_x, mejor_y, peor_x, peor_y, Data.generacion_actual)
+    valores_x = [individuo.x for individuo in Data.poblacion_general]
+    valores_y = [individuo.y for individuo in Data.poblacion_general]
+    if Data.tipo_problema_value == "Minimizacion":
+        mejor_x = min([individuo.x for individuo in Data.poblacion_general])
+        mejor_y = min([individuo.y for individuo in Data.poblacion_general])
+        peor_x = max([individuo.x for individuo in Data.poblacion_general])
+        peor_y = max([individuo.y for individuo in Data.poblacion_general])
+    else:
+        mejor_x = max([individuo.x for individuo in Data.poblacion_general])
+        mejor_y = max([individuo.y for individuo in Data.poblacion_general])
+        peor_x = min([individuo.x for individuo in Data.poblacion_general])
+        peor_y = min([individuo.y for individuo in Data.poblacion_general])    
+    generar_segunda_grafica(valores_x, valores_y,mejor_x, mejor_y, peor_x, peor_y, Data.generacion_actual, Data.limite_inferior, Data.limite_superior, Estadisticas.mejor_individuo_arreglo, Estadisticas.peor_individuo_arreglo)
         
-    generar_graficas(Estadisticas.mejor_individuo_arreglo, Estadisticas.peor_individuo_arreglo, Estadisticas.promedio_arreglo, Estadisticas.generacion_arreglo, Data.num_generaciones)
+    #generar_graficas(Estadisticas.mejor_individuo_arreglo, Estadisticas.peor_individuo_arreglo, Estadisticas.promedio_arreglo, Estadisticas.generacion_arreglo, Data.num_generaciones)

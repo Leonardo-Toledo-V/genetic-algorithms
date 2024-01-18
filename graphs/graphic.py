@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-import os
+#import os
 i = 0
 
 def generar_graficas(mejor_individuo, peor_individuo, promedio, generacion_actual, num_generaciones):
@@ -17,10 +17,10 @@ def generar_graficas(mejor_individuo, peor_individuo, promedio, generacion_actua
     plt.ylabel("Eje Y")
     plt.grid(True)
     
-    img_folder_path = 'results/first-graph/img'
+    #img_folder_path = 'results/first-graph/img'
 
-    if not os.path.exists(img_folder_path):
-        os.makedirs(img_folder_path)
+    #if not os.path.exists(img_folder_path):
+    #    os.makedirs(img_folder_path)
 
     plt.plot(x, media, label='Promedio', color='#0fb9b1')
     plt.plot(x, mejor, label='Mejor individuo', color='#f7b731')
@@ -28,10 +28,10 @@ def generar_graficas(mejor_individuo, peor_individuo, promedio, generacion_actua
     
     plt.legend()
 
-    img_file_name = f'img_generacion_{i}.png'
+    #img_file_name = f'img_generacion_{i}.png'
 
-    img_file_path = os.path.join(img_folder_path, img_file_name)
-    plt.savefig(img_file_path)
+    #img_file_path = os.path.join(img_folder_path, img_file_name)
+    #plt.savefig(img_file_path)
     
     if i == generacion:
         plt.show()

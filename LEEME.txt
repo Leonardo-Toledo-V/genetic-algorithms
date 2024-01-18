@@ -65,4 +65,14 @@ Probabilidad de mutación del gen: 0.4
 Número de generaciones: 50
 Tipo de problema: Minimizacion
 
-((x)*cos(x))-((x)*sin(3*x))
+
+Caso de prueba 5 
+((x)*cos(2*x))-((x)*sin(3*x))
+Población inicial: 5
+Población máxima: 20
+Resolución: 0.1
+Límites: [0, 10]
+Probabilidad de mutación del individuo: 0.5
+Probabilidad de mutación del gen: 0.4
+Número de generaciones: 50
+Tipo de problema: Maximizacion
