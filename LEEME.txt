@@ -12,7 +12,6 @@ Tipo de problema: Maximización
 
 
 Caso de Prueba 3 (documento):
-
 Función: (x**3 * sin(x))/100 + x**2 *cos(x)
 Población inicial: 4
 Población máxima: 40
@@ -27,7 +26,7 @@ Tipo de problema: Maximización
 
 Caso de Prueba 3
 
-Función: (x**3 * sin(x))/100 + x**2 *cos(x)
+Función: (x**3 * sin(x))/100 + x**2 *cos(x))
 Población inicial: 2
 Población máxima: 4
 Resolución: 0.05
@@ -76,3 +75,7 @@ Probabilidad de mutación del individuo: 0.5
 Probabilidad de mutación del gen: 0.4
 Número de generaciones: 50
 Tipo de problema: Maximizacion
+
+
+
+((x**2 * cos(x))/100) + (x**2) *(sin(x))

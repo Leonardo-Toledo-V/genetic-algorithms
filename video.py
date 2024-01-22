@@ -10,7 +10,7 @@ def generar_video(generacion):
 
     file_names = []
 
-    for i in range(1, generacion):
+    for i in range(1, generacion + 1 ):
         img_file_name = f'img_generacion_{i}.png'
         img_file_path = os.path.join(img_folder_path, img_file_name)
         file_names.append(img_file_path)

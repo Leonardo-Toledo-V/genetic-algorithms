@@ -84,10 +84,8 @@ def calcular_funcion(funcion, valor_x):
 def calcular_valor_x(num_generado):
     if Data.limite_inferior >= Data.limite_superior:
         valor_x = Data.limite_superior + num_generado*Data.resolucion
-        print(f"valor de x en primer if {valor_x}")
         return valor_x
     valor_x = Data.limite_inferior + num_generado*Data.resolucion
-    print(f"valor de x en segundo if {valor_x}")
     return valor_x
 
 
@@ -101,14 +99,10 @@ def calcular_datos():
     else:
         Data.num_bits = int(Data.num_bits)
     Data.resolucion = Data.rango/((2**Data.num_bits))
-    print(f"resolucion {Data.resolucion}")
-    print(f"rango : {Data.rango}")
-    print(f"num_bits : {Data.num_bits}")
     if Data.resolucion % 1 == 0:
         Data.resolucion =  int(Data.resolucion)
     else:
         Data.resolucion = round(Data.resolucion, 4)        
-    print(f"resolucion {Data.resolucion}")
     Data.rango_numero= 2**Data.num_bits-1
     Data.rango_punto_cruza = len(bin(Data.rango_numero)[2:])    
 
@@ -121,8 +115,8 @@ def generar_primer_poblacion():
             valor_y = calcular_funcion(Data.funcion, valor_x)
             individuo = Individuo(i=num_generado, binario=num_generado_binario, x=valor_x, y= valor_y)
             Data.poblacion_general.append(individuo)
-        for individuo in Data.poblacion_general:
-            print(f"este es el individuo generado {individuo}")
+        #for individuo in Data.poblacion_general:
+        #    print(f"este es el individuo generado {individuo}")
 
 
 def imprimir_mejor_individuo():
@@ -158,9 +152,9 @@ def genetic_algorithm(data):
     for generacion in range(1, Data.num_generaciones + 1):
         Data.generacion_actual= generacion
         optimizacion()
-        print(f"Población en la generación :{Data.generacion_actual} ")
-        for individuo in Data.poblacion_general:
-            print(individuo)
+        #print(f"Población en la generación :{Data.generacion_actual} ")
+        #for individuo in Data.poblacion_general:
+        #    print(individuo)
         generar_estadisticas()
     generar_video(Data.num_generaciones)
     imprimir_mejor_individuo()
@@ -310,6 +304,6 @@ def generar_estadisticas():
         mejor_y = max([individuo.y for individuo in Data.poblacion_general])
         peor_x = min([individuo.x for individuo in Data.poblacion_general])
         peor_y = min([individuo.y for individuo in Data.poblacion_general])    
-    generar_segunda_grafica(valores_x, valores_y,mejor_x, mejor_y, peor_x, peor_y, Data.generacion_actual, Data.limite_inferior, Data.limite_superior, Estadisticas.mejor_individuo_arreglo, Estadisticas.peor_individuo_arreglo)
+    generar_segunda_grafica(valores_x, valores_y,mejor_x, mejor_y, peor_x, peor_y, Data.generacion_actual, Data.limite_inferior, Data.limite_superior, Estadisticas.mejor_individuo_arreglo, Estadisticas.peor_individuo_arreglo, Data.funcion, Data.tipo_problema_value)
         
-    #generar_graficas(Estadisticas.mejor_individuo_arreglo, Estadisticas.peor_individuo_arreglo, Estadisticas.promedio_arreglo, Estadisticas.generacion_arreglo, Data.num_generaciones)
+    generar_graficas(Estadisticas.mejor_individuo_arreglo, Estadisticas.peor_individuo_arreglo, Estadisticas.promedio_arreglo, Estadisticas.generacion_arreglo, Data.num_generaciones)
