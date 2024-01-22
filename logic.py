@@ -152,7 +152,7 @@ def genetic_algorithm(data):
     for generacion in range(1, Data.num_generaciones + 1):
         Data.generacion_actual= generacion
         optimizacion()
-        #print(f"Población en la generación :{Data.generacion_actual} ")
+        print(f"Generación :{Data.generacion_actual} ")
         #for individuo in Data.poblacion_general:
         #    print(individuo)
         generar_estadisticas()
@@ -275,11 +275,11 @@ def guardar_nuevos_individuos(individuo1, individuo2):
 def generar_estadisticas():
     
     if Data.tipo_problema_value == "Minimizacion":
-        mejor_individuo = min(Data.poblacion_general, key=lambda x: x.y)
-        peor_individuo = max(Data.poblacion_general, key=lambda x: x.y)
+        mejor_individuo = min(Data.poblacion_general, key=lambda individuo: individuo.y)
+        peor_individuo = max(Data.poblacion_general, key=lambda individuo: individuo.y)
     else:
-        mejor_individuo = max(Data.poblacion_general, key=lambda x: x.y)
-        peor_individuo = min(Data.poblacion_general, key=lambda x: x.y)
+        mejor_individuo = max(Data.poblacion_general, key=lambda individuo: individuo.y)
+        peor_individuo = min(Data.poblacion_general, key=lambda individuo: individuo.y)
     
     promedio = sum(individuo.y for individuo in Data.poblacion_general) / len(Data.poblacion_general)
     
@@ -295,15 +295,15 @@ def generar_estadisticas():
     valores_x = [individuo.x for individuo in Data.poblacion_general]
     valores_y = [individuo.y for individuo in Data.poblacion_general]
     if Data.tipo_problema_value == "Minimizacion":
-        mejor_x = min([individuo.x for individuo in Data.poblacion_general])
-        mejor_y = min([individuo.y for individuo in Data.poblacion_general])
-        peor_x = max([individuo.x for individuo in Data.poblacion_general])
-        peor_y = max([individuo.y for individuo in Data.poblacion_general])
+        mejor_y = min(Data.poblacion_general, key=lambda individuo: individuo.y)
+        mejor_x = mejor_y.x
+        peor_y = max(Data.poblacion_general, key=lambda individuo: individuo.y)
+        peor_x = peor_y.x
     else:
-        mejor_x = max([individuo.x for individuo in Data.poblacion_general])
-        mejor_y = max([individuo.y for individuo in Data.poblacion_general])
-        peor_x = min([individuo.x for individuo in Data.poblacion_general])
-        peor_y = min([individuo.y for individuo in Data.poblacion_general])    
-    generar_segunda_grafica(valores_x, valores_y,mejor_x, mejor_y, peor_x, peor_y, Data.generacion_actual, Data.limite_inferior, Data.limite_superior, Estadisticas.mejor_individuo_arreglo, Estadisticas.peor_individuo_arreglo, Data.funcion, Data.tipo_problema_value)
+        mejor_y = max(Data.poblacion_general, key=lambda individuo: individuo.y)
+        mejor_x = mejor_y.x
+        peor_y = min(Data.poblacion_general, key=lambda individuo: individuo.y)
+        peor_x = peor_y.x    
+    generar_segunda_grafica(valores_x, valores_y, mejor_x, mejor_y, peor_x, peor_y, Data.generacion_actual, Data.limite_inferior, Data.limite_superior, Estadisticas.mejor_individuo_arreglo, Estadisticas.peor_individuo_arreglo, Data.funcion, Data.tipo_problema_value)
         
     generar_graficas(Estadisticas.mejor_individuo_arreglo, Estadisticas.peor_individuo_arreglo, Estadisticas.promedio_arreglo, Estadisticas.generacion_arreglo, Data.num_generaciones)

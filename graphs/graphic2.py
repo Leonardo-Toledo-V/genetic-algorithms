@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 import os
+import numpy as np
+from sympy import symbols, lambdify
 i = 0
 
 def generar_segunda_grafica(x,y,mejor_x, mejor_y, peor_x, peor_y, generacion_actual, inicial_x, final_x, mejor_individuo, peor_individuo, funcion, tipo_problema):
@@ -7,12 +9,14 @@ def generar_segunda_grafica(x,y,mejor_x, mejor_y, peor_x, peor_y, generacion_act
     individuo_x = x
     individuo_y = y
     mejor_x_value = mejor_x
-    mejor_y_value = mejor_y
+    mejor_y_value = mejor_y.y
     peor_x_value = peor_x
-    peor_y_value = peor_y
+    peor_y_value = peor_y.y
     
     limite_inicial = inicial_x
     limite_final = final_x
+    
+    
     
     mejor_individuo_y = max(mejor_individuo)
     peor_individuo_y = min(peor_individuo)
@@ -39,17 +43,27 @@ def generar_segunda_grafica(x,y,mejor_x, mejor_y, peor_x, peor_y, generacion_act
     if not os.path.exists(img_folder_path):
         os.makedirs(img_folder_path)
 
-    plt.scatter(individuo_x, individuo_y, label="Individuos", s=500, c="#45aaf2", alpha=0.4)
+    plt.scatter(individuo_x, individuo_y, label="Individuos", s=400, c="#45aaf2", alpha=0.4)
     plt.xlim(limite_inicial, limite_final)
 
     if tipo_problema_value == "Minimizacion":
-        plt.scatter(mejor_x_value, mejor_y_value, label="Peor", s=500, c="#eb3b5a", alpha=0.4)
-        plt.scatter(peor_x_value, peor_y_value, label="Mejor", s=500, c="#20bf6b", alpha=0.4)
+        x_func = np.linspace(limite_inicial, limite_final, 200)
+        x = symbols('x')
+        expresion = lambdify(x, funcion_value, 'numpy')
+        y_func= expresion(x_func)
+        plt.plot(x_func, y_func)
+        plt.scatter(mejor_x_value, mejor_y_value, label="Mejor", s=400, c="#20bf6b", alpha=0.4)
+        plt.scatter(peor_x_value, peor_y_value, label="Peor", s=400, c="#eb3b5a", alpha=0.4)
         plt.legend()
         plt.ylim(peor_individuo_y + 10, mejor_individuo_y - 10)
     else:
-        plt.scatter(mejor_x_value, mejor_y_value, label="Mejor", s=500, c="#20bf6b", alpha=0.4)
-        plt.scatter(peor_x_value, peor_y_value, label="Peor", s=500, c="#eb3b5a", alpha=0.4)
+        x_func = np.linspace(limite_inicial, limite_final, 200)
+        x = symbols('x')
+        expresion = lambdify(x, funcion_value, 'numpy')
+        y_func= expresion(x_func)
+        plt.plot(x_func, y_func)
+        plt.scatter(mejor_x_value, mejor_y_value, label="Mejor", s=400, c="#20bf6b", alpha=0.4)
+        plt.scatter(peor_x_value, peor_y_value, label="Peor", s=400, c="#eb3b5a", alpha=0.4)
         plt.legend()
         plt.ylim(peor_individuo_y -10 , mejor_individuo_y + 10)
     
