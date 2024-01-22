@@ -43,8 +43,8 @@ def generar_segunda_grafica(x,y,mejor_x, mejor_y, peor_x, peor_y, generacion_act
     plt.xlim(limite_inicial, limite_final)
 
     if tipo_problema_value == "Minimizacion":
-        plt.scatter(mejor_x_value, mejor_y_value, label="Peor", s=500, c="#20bf6b", alpha=0.4)
-        plt.scatter(peor_x_value, peor_y_value, label="Mejor", s=500, c="#eb3b5a", alpha=0.4)
+        plt.scatter(mejor_x_value, mejor_y_value, label="Peor", s=500, c="#eb3b5a", alpha=0.4)
+        plt.scatter(peor_x_value, peor_y_value, label="Mejor", s=500, c="#20bf6b", alpha=0.4)
         plt.legend()
         plt.ylim(peor_individuo_y + 10, mejor_individuo_y - 10)
     else:
